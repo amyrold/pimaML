@@ -7,8 +7,14 @@ Created on Thu Nov 16 18:25:01 2023
 """
 
 #%% Script outline
-
-
+# Data cleanup and normalization - Aaron
+# Train/dev/test split
+# Model building
+# * KNN - Mansi
+# * Logistic Regression - Natalie
+# * SVM - Grace
+# * Neural Network - Niru
+# Evaluation - Aaron
 
 
 #%% Data cleanup and normalization
@@ -22,6 +28,27 @@ Created on Thu Nov 16 18:25:01 2023
 
 
 #%% Model building
+
+
+
+
+#%% KNN
+
+
+
+
+
+#%% Logistic Regresson
+
+
+
+
+#%% SVM
+
+
+
+
+#%% Neural Network
 
 
 

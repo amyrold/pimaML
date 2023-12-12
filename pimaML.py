@@ -22,11 +22,12 @@ import pandas as pd
 import numpy as np
 
 from sklearn.preprocessing import MinMaxScaler
-from sklearn.model_selection import train_test_split
+from sklearn.model_selection import train_test_split, cross_val_score, KFold
 from sklearn.metrics import classification_report, confusion_matrix 
 from sklearn.svm import SVC 
 from sklearn import svm #importing svm model
 from sklearn import metrics
+from sklearn.neural_network import MLPClassifier
 
 
 #%% Create Directories

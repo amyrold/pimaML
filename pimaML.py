@@ -23,6 +23,10 @@ import numpy as np
 
 from sklearn.preprocessing import MinMaxScaler
 from sklearn.model_selection import train_test_split
+from sklearn.metrics import classification_report, confusion_matrix 
+from sklearn.svm import SVC 
+from sklearn import svm #importing svm model
+from sklearn import metrics
 
 
 #%% Create Directories
@@ -82,6 +86,25 @@ dev_X, test_X, dev_Y, test_Y = train_test_split(temp_X, temp_Y, test_size = 0.50
 
 
 #%% SVM
+#Creating SVM classifier with linear kernel
+classifier = svm.SVC(kernel='linear') 
+
+#Fitting the model with the training sets
+classifier.fit(train_X, train_y)
+
+#Predict the response for training dataset
+y_train_pred = classifier.predict(train_X)
+
+#Evaluating Accuracy of training model on training model
+print("### Evaluating Accuracy of SVM classifier on training set ###")
+print("Accuracy of SVM:",metrics.accuracy_score(train_y, y_train_pred))
+
+#Evaluating Accuracy of training model on development set
+
+#Predict the response for test dataset
+y_dev_pred = classifier.predict(test_X)
+print("\n### Evaluating Accuracy of SVM classifier on development set ###")
+print("Accuracy of SVM:",metrics.accuracy_score(test_y, y_dev_pred))
 
 
 

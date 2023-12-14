@@ -145,7 +145,7 @@ LR_tuned = scores_new.mean()
 
 #evaluates on test dataset
 accuracy_score_test = gs.score(test_X, test_y)
-<<<<<<< HEAD
+
 print(f'Logistic regression Accuracy score on the test set post grid search: {accuracy_score_test*100}%')
 
 =======

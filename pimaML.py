@@ -154,7 +154,7 @@ mlp_og = mlp.fit(train_X, train_y)
 kf = KFold(n_splits = 10)
 scores = cross_val_score(mlp_og, train_X, train_y, cv = kf)
 print(f"Accuracy Scores Default Hyperparams: {scores}")
-print(f"Average Accuracy Scores: {scores.mean()}")
+print(f"Average CV Accuracy Scores on OG model: {scores.mean()}")
 
 #setting a grid
 grid = {
@@ -169,6 +169,9 @@ grid = {
 #performing grid search cv
 mlp_gs_cv = GridSearchCV(estimator=mlp, param_grid=grid, cv= kf) #returns a model with the best hyperparameters
 
+#Find best parameters from the Grid search CV
+print(f"best_params: {mlp_gs_cv.best_params_}")
+
 #fitting the model with best hyper parameters on the training set
 mlp_gs_cv.fit(train_X, train_y)
 
@@ -178,6 +181,10 @@ scores_new = cross_val_score(mlp_gs_cv, train_X, train_y, cv = kf)
 #print accuracy scores
 print(f"Accuracy Scores after Tuning: {scores_new}")
 print(f"Average Accuracy Scores after Tuning: {scores_new.mean()}")
+
+#print accuracy on test set
+accuracy_score_test = mlp_gs_cv.score(test_X, test_y)
+print(f"The accuracy of the MLP on the test score is: {accuracy_score_test}")
 
 #%% Evaluation
 

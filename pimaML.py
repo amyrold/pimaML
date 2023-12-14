@@ -204,6 +204,7 @@ mlp_og = mlp.fit(train_X, train_y)
 kf = KFold(n_splits = 10)
 kf.get_n_splits(train_X)
 mlp_baseline = cross_val_score(mlp_og, train_X, train_y, cv = kf)
+mlp_baseline = mlp_baseline.mean()
 print(f"Accuracy Scores Default Hyperparams: {mlp_baseline}")
 print(f"Average CV Accuracy Scores on OG model: {mlp_baseline.mean()}")
 
@@ -231,6 +232,7 @@ mlp_hp = mlp_gs_cv.best_params_
 
 #doing k cross validation with new tuned model on the training set to see how the accuracies change
 mlp_tuned = cross_val_score(mlp_gs_cv, train_X, train_y, cv = kf)
+mlp_tuned = mlp_tuned.mean()
 
 #print accuracy scores after hyper parameter tuning
 print(f"Accuracy Scores after Tuning: {mlp_tuned}")

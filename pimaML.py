@@ -64,7 +64,7 @@ X_norm = scaler.fit_transform(X)
 #%% Train/dev/test split
 
 # First seperate the training set from the dev/test (temp) sets
-train_X, temp_X, train_y, temp_y = train_test_split(X_norm, Y, test_size = 0.30, shuffle = True)
+train_X, test_X, train_y, test_y = train_test_split(X_norm, Y, test_size = 0.30, shuffle = True)
 
 
 #%% Model building

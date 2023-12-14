@@ -19,15 +19,16 @@ Created on Thu Nov 16 18:25:01 2023
 #%%
 import os
 import pandas as pd
-import numpy as np
 
 from sklearn.preprocessing import MinMaxScaler
-from sklearn.model_selection import train_test_split, cross_val_score, KFold
+from sklearn.model_selection import train_test_split, cross_val_score, KFold, GridSearchCV
 from sklearn.metrics import classification_report, confusion_matrix 
 from sklearn.svm import SVC 
 from sklearn import svm #importing svm model
 from sklearn import metrics
 from sklearn.neural_network import MLPClassifier
+from sklearn.linear_model import LogisticRegression
+from sklearn.neighbors import KNeighborsClassifier
 
 
 #%% Create Directories
@@ -68,14 +69,7 @@ train_X, test_X, train_y, test_y = train_test_split(X_norm, Y, test_size = 0.30,
 
 
 #%% Model building
-
-
-
-
 #%% KNN
-from sklearn.neighbors import KNeighborsClassifier
-from sklearn.model_selection import GridSearchCV
-from sklearn.model_selection import KFold
 
 knn = KNeighborsClassifier()
 
@@ -87,7 +81,8 @@ knn_og = knn.fit(train_X, train_y)
 kf = KFold(n_splits = 10)
 scores = cross_val_score(knn_og, train_X, train_y, cv = kf)
 print(f"Accuracy Scores Default Hyperparams: {scores}")
-print(f"Average Accuracy Scores: {scores.mean()}")
+knn_baseline = scores.mean()
+print(f"Average Accuracy Scores: {knn_baseline}")
 
 
 #setting a grid
@@ -105,26 +100,23 @@ knn_gs_cv = GridSearchCV(estimator=knn, param_grid=grid, cv= kf) #returns a mode
 #fitting the model with best hyper parameters on the training set
 knn_gs_cv.fit(train_X, train_y)
 #printing the model’s best parameters
-print(f"best_params: {knn_gs_cv.best_params_}")
+knn_hp = knn_gs_cv.best_params_
+print(f"best_params: {knn_hp}")
 
 
 #doing k cross validation with new tuned model on the training set to see how the accuracies change
 scores_new = cross_val_score(knn_gs_cv, train_X, train_y, cv = kf)
+knn_tuned = scores_new.mean()
 
 #print accuracy scores
 print(f"Accuracy Scores after Tuning: {scores_new}")
-print(f"Average Accuracy Scores after Tuning: {scores_new.mean()}")
+print(f"Average Accuracy Scores after Tuning: {knn_tuned}")
 
-
-#knn_test = KNeighborsClassifier(n_neighbors=9, p=1, weights='distance')
-print("Accuracy after scoring tuned model on test", knn_gs_cv.score(test_X,test_y))
+knn_test = knn_gs_cv.score(test_X,test_y)
+print(f"Accuracy after scoring tuned model on test: {knn_test}")
 
 #%% Logistic Regresson
 
-import pandas as pd
-from sklearn.model_selection import KFold
-from sklearn.model_selection import cross_val_score
-from sklearn.linear_model import LogisticRegression
 
 model= LogisticRegression()
 model_og = model.fit(train_X, train_y)
@@ -138,7 +130,6 @@ results = cross_val_score(model, train_X, train_y, cv=kfold)
 # Output the accuracy. Calculate the mean and std across all folds.
 print(f"Logistic regression Accuracy on training set before grid search: {results.mean()*100.0}%")
 
-from sklearn.model_selection import GridSearchCV
  #grid search
 hp = {'C': [0.0001, 0.001, 0.01, 0.1, 1, 10, 100, 1000, 10000], 'solver': ['liblinear','lbfgs', 'newton-cg','sag','saga', 'newton-cholesky']}
 gs = GridSearchCV(estimator = model, param_grid = hp, cv = kfold)
@@ -153,9 +144,6 @@ print(f'Logistic regression Accuracy score mean after grid search: {scores_new.m
 #evaluates on test dataset
 accuracy_score_test = gs.score(test_X, test_y)
 print(f'Logistic regression Accuracy score on the test set post grid search: {accuracy_score_test*100}%')
-
-
-
 
  #%% SVM
 #fit model for classification
@@ -195,9 +183,6 @@ y_test_pred = grid_search.predict(test_X)
 print("Final SVM Accuracy on the Test Set:", metrics.accuracy_score(test_y, y_test_pred))
 
 #%% Neural Network
-from sklearn.model_selection import KFold
-from sklearn.neural_network import MLPClassifier
-from sklearn.model_selection import GridSearchCV
 
 mlp = MLPClassifier(solver='lbfgs', alpha=1e-5,hidden_layer_sizes=(5, 2), random_state=1)
 

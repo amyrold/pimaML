@@ -128,22 +128,25 @@ kfold.get_n_splits(train_X)
 results = cross_val_score(model, train_X, train_y, cv=kfold)
 
 # Output the accuracy. Calculate the mean and std across all folds.
-print(f"Logistic regression Accuracy on training set before grid search: {results.mean()*100.0}%")
+print(f"LR_baseline: {results.mean()*100.0}%")
+LR_baseline = results.mean()
 
  #grid search
 hp = {'C': [0.0001, 0.001, 0.01, 0.1, 1, 10, 100, 1000, 10000], 'solver': ['liblinear','lbfgs', 'newton-cg','sag','saga', 'newton-cholesky']}
 gs = GridSearchCV(estimator = model, param_grid = hp, cv = kfold)
 gs.fit(train_X, train_y)
-print(f"Logistic regression best hyperparameters determined by grid search: {gs.best_params_}")
-
+print(f"LR_hp: {gs.best_params_}")
+LR_hp = gs.best_params_
 
 #trains model using new hyperparameters
 scores_new = cross_val_score(gs, train_X, train_y, cv = kfold)
-print(f'Logistic regression Accuracy score mean after grid search: {scores_new.mean()*100}%')
+print(f'LR_tuned: {scores_new.mean()*100}%')
+LR_tuned = scores_new.mean()
 
 #evaluates on test dataset
 accuracy_score_test = gs.score(test_X, test_y)
-print(f'Logistic regression Accuracy score on the test set post grid search: {accuracy_score_test*100}%')
+print(f'LR_test: {accuracy_score_test*100}%')
+LR_test = accuracy_score_test
 
  #%% SVM
 #fit model for classification

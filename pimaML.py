@@ -22,8 +22,7 @@ import pandas as pd
 
 from sklearn.preprocessing import MinMaxScaler
 from sklearn.model_selection import train_test_split, cross_val_score, KFold, GridSearchCV
-from sklearn.metrics import classification_report, confusion_matrix 
-from sklearn.svm import SVC 
+from sklearn.metrics import classification_report, confusion_matrix
 from sklearn import svm #importing svm model
 from sklearn import metrics
 from sklearn.neural_network import MLPClassifier
@@ -186,8 +185,8 @@ SVM_tuned = scores2.mean()
 print("SVM Average CV Scores with Optimal Hyperparameters:", SVM_tuned)
 
 #Evaluating Model on the Test Set
-y_test_pred = grid_search.predict(test_X)
-SVM_test = metrics.accuracy_score(test_y, y_test_pred)
+svm_pred = grid_search.predict(test_X)
+SVM_test = metrics.accuracy_score(test_y, svm_pred)
 print("Final SVM Accuracy on the Test Set:", SVM_test)
 
 #%% Neural Network
@@ -239,7 +238,21 @@ print(f"The accuracy of the MLP on the test score is: {mlp_test}")
 
 #%% Evaluation
 
+knn_pred = knn_gs_cv.predict(test_X)
+knn_cr = classification_report(test_y, knn_pred)
+print('KNN Classification Report:\n', knn_cr)
 
+LR_pred = gs.predict(test_X)
+LR_cr = classification_report(test_y, LR_pred)
+print('LR Classification Report:\n', LR_cr)
+
+svm_pred = grid_search.predict(test_X)
+svm_cr = classification_report(test_y, svm_pred)
+print('SVM Classification Report:\n', svm_cr)
+
+mlp_pred = mlp_gs_cv.predict(test_X)
+mlp_cr = classification_report(test_y, mlp_pred)
+print('mlp Classification Report:\n', mlp_cr)
 
 
 

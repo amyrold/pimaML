@@ -112,8 +112,42 @@ print("Accuracy of SVM:",metrics.accuracy_score(test_y, y_dev_pred))
 
 #%% Neural Network
 
+from sklearn.neural_network import MLPClassifier
+from sklearn.model_selection import GridSearchCV
 
+mlp = MLPClassifier(solver='lbfgs', alpha=1e-5,hidden_layer_sizes=(5, 2), random_state=1)
 
+#fit mlp on training set
+mlp_og = mlp.fit(train_X, train_y)
+
+#N-fold cross validation to evaluate weights
+kf = KFold(n_splits = 10)
+scores = cross_val_score(mlp_og, train_X, train_y, cv = kf)
+print(f"Accuracy Scores Default Hyperparams: {scores}")
+print(f"Average Accuracy Scores: {scores.mean()}")
+
+#setting a grid
+grid = {
+    'hidden_layer_sizes': [(100,100), (100,100,50)],
+    'activation': ['tanh', 'relu'],
+    'solver': ['adam', 'lbfgs', 'sgd'],
+    'alpha': [0.0001, 0.05],
+    'learning_rate': ['constant','adaptive'],
+    'max_iter' : [10000]
+}
+
+#performing grid search cv
+mlp_gs_cv = GridSearchCV(estimator=mlp, param_grid=grid, cv= kf) #returns a model with the best hyperparameters
+
+#fitting the model with best hyper parameters on the training set
+mlp_gs_cv.fit(train_X, train_y)
+
+#doing k cross validation with new tuned model on the training set to see how the accuracies change
+scores_new = cross_val_score(mlp_gs_cv, train_X, train_y, cv = kf)
+
+#print accuracy scores
+print(f"Accuracy Scores after Tuning: {scores_new}")
+print(f"Average Accuracy Scores after Tuning: {scores_new.mean()}")
 
 #%% Evaluation
 

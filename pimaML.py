@@ -76,10 +76,51 @@ dev_X, test_X, dev_Y, test_y = train_test_split(temp_X, temp_y, test_size = 0.50
 
 
 #%% KNN
+from sklearn.neighbors import KNeighborsClassifier
+from sklearn.model_selection import GridSearchCV
+from sklearn.model_selection import KFold
+
+knn = KNeighborsClassifier()
+
+#fit knn on training set
+knn_og = knn.fit(train_X, train_y)
 
 
+#N-fold cross validation to evaluate weights
+kf = KFold(n_splits = 10)
+scores = cross_val_score(knn_og, train_X, train_y, cv = kf)
+print(f"Accuracy Scores Default Hyperparams: {scores}")
+print(f"Average Accuracy Scores: {scores.mean()}")
 
 
+#setting a grid
+grid = {
+'n_neighbors': [1,2,3,4,5,6,7,8,9,10],
+'weights': ['uniform', 'distance'],
+'p': [1,2]
+}
+
+
+#performing grid search cv, use mlp as the base model
+knn_gs_cv = GridSearchCV(estimator=knn, param_grid=grid, cv= kf) #returns a model with the best hyperparameters
+
+
+#fitting the model with best hyper parameters on the training set
+knn_gs_cv.fit(train_X, train_y)
+#printing the model’s best parameters
+print(f"best_params: {knn_gs_cv.best_params_}")
+
+
+#doing k cross validation with new tuned model on the training set to see how the accuracies change
+scores_new = cross_val_score(knn_gs_cv, train_X, train_y, cv = kf)
+
+#print accuracy scores
+print(f"Accuracy Scores after Tuning: {scores_new}")
+print(f"Average Accuracy Scores after Tuning: {scores_new.mean()}")
+
+
+#knn_test = KNeighborsClassifier(n_neighbors=9, p=1, weights='distance')
+print("Accuracy after scoring tuned model on test", knn_gs_cv.score(test_X,test_y))
 
 #%% Logistic Regresson
 
@@ -88,29 +129,16 @@ dev_X, test_X, dev_Y, test_y = train_test_split(temp_X, temp_y, test_size = 0.50
 
  #%% SVM
 #Creating SVM classifier with linear kernel
-classifier = svm.SVC(kernel='linear') 
 classifier = svm.SVC(kernel='rbf') 
 
 #Fitting the model with the training sets
 classifier.fit(train_X,train_y)
 
-#Predict the response for training dataset
-y_train_pred = classifier.predict(train_X)
 #K-Fold Cross Validation on initial training model
 k_folds = KFold(n_splits = 10)
-
-#Evaluating Accuracy of training model on training model
-print("### Evaluating Accuracy of SVM classifier on training set ###")
-print("Accuracy of SVM:",metrics.accuracy_score(train_y, y_train_pred))
 scores = cross_val_score(classifier, train_X, train_y, cv = k_folds)
-
-#Evaluating Accuracy of training model on development set
 print("Average CV Scores:", scores.mean())
 
-#Predict the response for test dataset
-y_dev_pred = classifier.predict(test_X)
-print("\n### Evaluating Accuracy of SVM classifier on development set ###")
-print("Accuracy of SVM:",metrics.accuracy_score(test_y, y_dev_pred))
 #Grid Search with initial weights
 param_grid = {'kernel': ['linear','poly','rbf', 'sigmoid'], 'C': [0.001, 0.1, 1, 10, 100, 1000], 'gamma': [0.001, 0.1, 1, 10, 100, 1000]}
 

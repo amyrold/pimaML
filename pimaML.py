@@ -14,6 +14,7 @@ Created on Thu Nov 16 18:25:01 2023
 # * Logistic Regression - Natalie
 # * SVM - Grace
 # * Neural Network - Niru
+# * Dummy Classifier - Aaron
 # Evaluation - Aaron
 
 #%%
@@ -68,7 +69,7 @@ X_norm = scaler.fit_transform(X)
 #%% Train/dev/test split
 
 # First seperate the training set from the dev/test (temp) sets
-train_X, test_X, train_y, test_y = train_test_split(X_norm, Y, test_size = 0.30, shuffle = True)
+train_X, test_X, train_y, test_y = train_test_split(X_norm, Y, test_size = 0.20, shuffle = True)
 
 
 #%% Model building
@@ -272,10 +273,10 @@ DM_cr = classification_report(test_y, DM_pred)
 print('DM Classification Report:\n:', DM_cr)
 
 # Accuracy Score Table
-data = [[knn_baseline, knn_tuned,knn_test,knn_hp],
-        [LR_baseline, LR_tuned,LR_test,LR_hp],
-        [SVM_baseline, SVM_tuned,SVM_test,SVM_hp],
-        [mlp_baseline, mlp_tuned,mlp_test,mlp_hp]]
+data = [[knn_baseline, knn_tuned,knn_test],
+        [LR_baseline, LR_tuned,LR_test],
+        [SVM_baseline, SVM_tuned,SVM_test],
+        [mlp_baseline, mlp_tuned,mlp_test]]
 
 columns = ['baseline','tuning','test','hp']
 index = ['KNN','LR','SVM','MLP']

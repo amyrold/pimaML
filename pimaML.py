@@ -28,8 +28,6 @@ from sklearn.svm import SVC
 from sklearn import svm #importing svm model
 from sklearn import metrics
 from sklearn.neural_network import MLPClassifier
-from sklearn.model_selection import KFold, cross_val_score
-from sklearn.model_selection import GridSearchCV
 
 
 #%% Create Directories
@@ -90,40 +88,27 @@ dev_X, test_X, dev_Y, test_y = train_test_split(temp_X, temp_y, test_size = 0.50
 
 #%% SVM
 #Creating SVM classifier with linear kernel
-classifier = svm.SVC(kernel='rbf') 
+classifier = svm.SVC(kernel='linear') 
 
 #Fitting the model with the training sets
-classifier.fit(train_X,train_y)
+classifier.fit(train_X, train_y)
 
-#K-Fold Cross Validation on initial training model
-k_folds = KFold(n_splits = 10)
+#Predict the response for training dataset
+y_train_pred = classifier.predict(train_X)
 
-scores = cross_val_score(classifier, train_X, train_y, cv = k_folds)
+#Evaluating Accuracy of training model on training model
+print("### Evaluating Accuracy of SVM classifier on training set ###")
+print("Accuracy of SVM:",metrics.accuracy_score(train_y, y_train_pred))
 
-print("Average CV Scores:", scores.mean())
+#Evaluating Accuracy of training model on development set
 
-#Grid Search with initial weights
-param_grid = {'kernel': ['linear','poly','rbf', 'sigmoid'], 'C': [0.001, 0.1, 1, 10, 100, 1000], 'gamma': [0.001, 0.1, 1, 10, 100, 1000]}
+#Predict the response for test dataset
+y_dev_pred = classifier.predict(test_X)
+print("\n### Evaluating Accuracy of SVM classifier on development set ###")
+print("Accuracy of SVM:",metrics.accuracy_score(test_y, y_dev_pred))
 
-grid_search = GridSearchCV(classifier, param_grid, cv=10)
 
-grid_search.fit(test_X, test_y)
 
-print("Best parameters:", grid_search.best_params_) 
-print("Best cross-validation score:", grid_search.best_score_)
-
-#Second Cross Validation with initial model and optimized hyperparameters
-classifier2= svm.SVC(kernel='poly',C= 0.001, gamma = 10)
-classifier2.fit(train_X, train_y)
-k_folds = KFold(n_splits = 10)
-
-scores2= cross_val_score(classifier2,train_X, train_y, cv = k_folds)
-
-print("Average CV Scores:", scores2.mean())
-
-#Evaluating Model on the Test Set
-y_test_pred = classifier2.predict(test_X)
-print("The accuracy on the test set is", metrics.accuracy_score(test_y, y_test_pred))
 
 #%% Neural Network
 
@@ -145,9 +130,9 @@ print(f"Average Accuracy Scores: {scores.mean()}")
 grid = {
     'hidden_layer_sizes': [(100,100), (100,100,50)],
     'activation': ['tanh', 'relu'],
-    'solver': ['adam', 'lbfgs', 'sgd'],
-    'alpha': [0.0001, 0.05],
-    'learning_rate': ['constant','adaptive'],
+    'solver': ['adam', 'lbfgs'],
+    # 'alpha': [0.0001, 0.05],
+    # 'learning_rate': ['constant','adaptive'],
     'max_iter' : [10000]
 }
 

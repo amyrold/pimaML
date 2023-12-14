@@ -158,39 +158,41 @@ print(f'Logistic regression Accuracy score on the test set post grid search: {ac
 
 
  #%% SVM
+#fit model for classification
 #Creating SVM classifier with linear kernel
-classifier = svm.SVC(kernel='rbf') 
+classifier = svm.SVC(kernel='linear') 
 
 #Fitting the model with the training sets
 classifier.fit(train_X,train_y)
 
-#K-Fold Cross Validation on initial training model
-k_folds = KFold(n_splits = 10)
-scores = cross_val_score(classifier, train_X, train_y, cv = k_folds)
-print("Average CV Scores:", scores.mean())
+train_pred = classifier.predict(train_X)
+print("Initial Accuracy of SVM", metrics.accuracy_score(train_y, train_pred))
 
-#Grid Search with initial weights
-param_grid = {'kernel': ['linear','poly','rbf', 'sigmoid'], 'C': [0.001, 0.1, 1, 10, 100, 1000], 'gamma': [0.001, 0.1, 1, 10, 100, 1000]}
+#K-Fold Cross Validation
+k_folds = KFold(n_splits = 10)
+
+scores = cross_val_score(classifier, train_X, train_y, cv = k_folds)
+
+print("Average SVM CV Scores with Default Hyperparameters:", scores.mean())
+
+#Grid Search
+param_grid = {'kernel': ['linear','poly'],'C':[.001, 0.1, 1, 10], 'gamma': [0.001, 0.1, 1, 10]}
 
 grid_search = GridSearchCV(classifier, param_grid, cv=10)
 
-grid_search.fit(test_X, test_y)
+grid_search.fit(train_X, train_y)
 
-print("Best parameters:", grid_search.best_params_) 
-print("Best cross-validation score:", grid_search.best_score_)
+print("SVM Optimal Hyperparameters:", grid_search.best_params_) 
+print("SVM Best cross-validation score with Optimal Hyperparameters:", grid_search.best_score_)
 
 #Second Cross Validation with initial model and optimized hyperparameters
-classifier2= svm.SVC(kernel='poly',C= 0.001, gamma = 10)
-classifier2.fit(train_X, train_y)
 k_folds = KFold(n_splits = 10)
-
-scores2= cross_val_score(classifier2,train_X, train_y, cv = k_folds)
-
-print("Average CV Scores:", scores2.mean())
+scores2= cross_val_score(grid_search,train_X, train_y, cv = k_folds)
+print("SVM Average CV Scores with Optimal Hyperparameters:", scores2.mean())
 
 #Evaluating Model on the Test Set
-y_test_pred = classifier2.predict(test_X)
-print("The accuracy on the test set is", metrics.accuracy_score(test_y, y_test_pred))
+y_test_pred = grid_search.predict(test_X)
+print("Final SVM Accuracy on the Test Set:", metrics.accuracy_score(test_y, y_test_pred))
 
 #%% Neural Network
 from sklearn.model_selection import KFold

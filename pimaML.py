@@ -19,15 +19,19 @@ Created on Thu Nov 16 18:25:01 2023
 #%%
 import os
 import pandas as pd
+from IPython.display import display
+
+
 
 from sklearn.preprocessing import MinMaxScaler
 from sklearn.model_selection import train_test_split, cross_val_score, KFold, GridSearchCV
-from sklearn.metrics import classification_report, confusion_matrix
+from sklearn.metrics import classification_report
 from sklearn import svm #importing svm model
 from sklearn import metrics
 from sklearn.neural_network import MLPClassifier
 from sklearn.linear_model import LogisticRegression
 from sklearn.neighbors import KNeighborsClassifier
+from sklearn.dummy import DummyClassifier
 
 
 #%% Create Directories
@@ -236,8 +240,14 @@ print(f"Average Accuracy Scores after Tuning: {mlp_tuned.mean()}")
 mlp_test = mlp_gs_cv.score(test_X, test_y)
 print(f"The accuracy of the MLP on the test score is: {mlp_test}")
 
+#%% Dummy Classifier
+# Create dummy classifier with most frequest
+dumb_MF = DummyClassifier(strategy= 'most_frequent')
+dumb_MF.fit(train_X,train_y)
+
 #%% Evaluation
 
+# Classification Reports
 knn_pred = knn_gs_cv.predict(test_X)
 knn_cr = classification_report(test_y, knn_pred)
 print('KNN Classification Report:\n', knn_cr)
@@ -254,6 +264,20 @@ mlp_pred = mlp_gs_cv.predict(test_X)
 mlp_cr = classification_report(test_y, mlp_pred)
 print('mlp Classification Report:\n', mlp_cr)
 
+# Create classification report for dummy MF
+DM_pred = dumb_MF.predict(test_X)
+DM_cr = classification_report(test_y, DM_pred)
+print('DM Classification Report:\n:', DM_cr)
 
+# Accuracy Score Table
+data = [[knn_baseline, knn_tuned,knn_test,knn_hp],
+        [LR_baseline, LR_tuned,LR_test,LR_hp],
+        [SVM_baseline, SVM_tuned,SVM_test,SVM_hp],
+        [mlp_baseline, mlp_tuned,mlp_test,mlp_hp]]
 
+columns = ['baseline','tuning','test','hp']
+index = ['KNN','LR','SVM','MLP']
+
+score_grid = pd.DataFrame(data, columns=columns, index=index)
+display(score_grid)
 

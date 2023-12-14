@@ -148,10 +148,8 @@ accuracy_score_test = gs.score(test_X, test_y)
 
 print(f'Logistic regression Accuracy score on the test set post grid search: {accuracy_score_test*100}%')
 
-=======
 print(f'LR_test: {accuracy_score_test*100}%')
 LR_test = accuracy_score_test
->>>>>>> d97401178b7a4b65f336fb78fcd8990577002f96
 
  #%% SVM
 #fit model for classification

@@ -207,9 +207,9 @@ mlp_og = mlp.fit(train_X, train_y)
 #N-fold cross validation to evaluate weights
 kf = KFold(n_splits = 10)
 kf.get_n_splits(train_X)
-scores = cross_val_score(mlp_og, train_X, train_y, cv = kf)
-print(f"Accuracy Scores Default Hyperparams: {scores}")
-print(f"Average CV Accuracy Scores on OG model: {scores.mean()}")
+mlp_baseline = cross_val_score(mlp_og, train_X, train_y, cv = kf)
+print(f"Accuracy Scores Default Hyperparams: {mlp_baseline}")
+print(f"Average CV Accuracy Scores on OG model: {mlp_baseline.mean()}")
 
 #setting a grid
 grid = {
@@ -231,15 +231,15 @@ print(f"best_params: {mlp_gs_cv.best_params_}")
 mlp_gs_cv.fit(train_X, train_y)
 
 #doing k cross validation with new tuned model on the training set to see how the accuracies change
-scores_new = cross_val_score(mlp_gs_cv, train_X, train_y, cv = kf)
+mlp_tuned = cross_val_score(mlp_gs_cv, train_X, train_y, cv = kf)
 
 #print accuracy scores after hyper parameter tuning
-print(f"Accuracy Scores after Tuning: {scores_new}")
-print(f"Average Accuracy Scores after Tuning: {scores_new.mean()}")
+print(f"Accuracy Scores after Tuning: {mlp_tuned}")
+print(f"Average Accuracy Scores after Tuning: {mlp_tuned.mean()}")
 
 #print accuracy on test set
-accuracy_score_test = mlp_gs_cv.score(test_X, test_y)
-print(f"The accuracy of the MLP on the test score is: {accuracy_score_test}")
+mlp_test = mlp_gs_cv.score(test_X, test_y)
+print(f"The accuracy of the MLP on the test score is: {mlp_test}")
 
 #%% Evaluation
 

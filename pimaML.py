@@ -121,6 +121,39 @@ print("Accuracy after scoring tuned model on test", knn_gs_cv.score(test_X,test_
 
 #%% Logistic Regresson
 
+import pandas as pd
+from sklearn.model_selection import KFold
+from sklearn.model_selection import cross_val_score
+from sklearn.linear_model import LogisticRegression
+
+model= LogisticRegression()
+model_og = model.fit(train_X, train_y)
+
+
+#evaluates the model with default parameters using 10-fold cross validation
+kfold = KFold(n_splits=10)
+kfold.get_n_splits(train_X)
+results = cross_val_score(model, train_X, train_y, cv=kfold)
+
+# Output the accuracy. Calculate the mean and std across all folds.
+print(f"Logistic regression Accuracy on training set before grid search: {results.mean()*100.0}%")
+
+from sklearn.model_selection import GridSearchCV
+ #grid search
+hp = {'C': [0.0001, 0.001, 0.01, 0.1, 1, 10, 100, 1000, 10000], 'solver': ['liblinear','lbfgs', 'newton-cg','sag','saga', 'newton-cholesky']}
+gs = GridSearchCV(estimator = model, param_grid = hp, cv = kfold)
+gs.fit(train_X, train_y)
+print(f"Logistic regression best hyperparameters determined by grid search: {gs.best_params_}")
+
+
+#trains model using new hyperparameters
+scores_new = cross_val_score(gs, train_X, train_y, cv = kfold)
+print(f'Logistic regression Accuracy score mean after grid search: {scores_new.mean()*100}%')
+
+#evaluates on test dataset
+accuracy_score_test = gs.score(test_X, test_y)
+print(f'Logistic regression Accuracy score on the test set post grid search: {accuracy_score_test*100}%')
+
 
 
 

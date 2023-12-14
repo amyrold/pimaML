@@ -44,7 +44,7 @@ for i in file_names:
 
 #%% Data cleanup and normalization
 # Read in data
-pima = pd.read_csv('/Users/nirushanbhag/Downloads/ML_project/pimaML/diabetes.csv')
+pima = pd.read_csv('diabetes.csv')
 
 # Convert predictors to 1's and -1's
 pima['Outcome'][pima['Outcome'] == 0] = -1
@@ -161,12 +161,6 @@ print("The accuracy on the test set is", metrics.accuracy_score(test_y, y_test_p
 
 #%% Neural Network
 from sklearn.model_selection import KFold
-
-
-kf = KFold(n_splits=10)
-kf.get_n_splits(train_X)
-
-
 from sklearn.neural_network import MLPClassifier
 from sklearn.model_selection import GridSearchCV
 
@@ -177,6 +171,7 @@ mlp_og = mlp.fit(train_X, train_y)
 
 #N-fold cross validation to evaluate weights
 kf = KFold(n_splits = 10)
+kf.get_n_splits(train_X)
 scores = cross_val_score(mlp_og, train_X, train_y, cv = kf)
 print(f"Accuracy Scores Default Hyperparams: {scores}")
 print(f"Average CV Accuracy Scores on OG model: {scores.mean()}")
@@ -203,7 +198,7 @@ mlp_gs_cv.fit(train_X, train_y)
 #doing k cross validation with new tuned model on the training set to see how the accuracies change
 scores_new = cross_val_score(mlp_gs_cv, train_X, train_y, cv = kf)
 
-#print accuracy scores
+#print accuracy scores after hyper parameter tuning
 print(f"Accuracy Scores after Tuning: {scores_new}")
 print(f"Average Accuracy Scores after Tuning: {scores_new.mean()}")
 

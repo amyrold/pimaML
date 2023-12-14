@@ -278,7 +278,7 @@ data = [[knn_baseline, knn_tuned,knn_test],
         [SVM_baseline, SVM_tuned,SVM_test],
         [mlp_baseline, mlp_tuned,mlp_test]]
 
-columns = ['baseline','tuning','test','hp']
+columns = ['baseline','tuning','test']
 index = ['KNN','LR','SVM','MLP']
 
 score_grid = pd.DataFrame(data, columns=columns, index=index)

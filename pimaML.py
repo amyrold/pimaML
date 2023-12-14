@@ -44,7 +44,7 @@ for i in file_names:
 
 #%% Data cleanup and normalization
 # Read in data
-pima = pd.read_csv('/Users/nirushanbhag/Downloads/ML_project/pimaML/diabetes.csv')
+pima = pd.read_csv('diabetes.csv')
 
 # Convert predictors to 1's and -1's
 pima['Outcome'][pima['Outcome'] == 0] = -1

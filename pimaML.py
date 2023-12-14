@@ -153,15 +153,15 @@ classifier = svm.SVC(kernel='linear')
 #Fitting the model with the training sets
 classifier.fit(train_X,train_y)
 
-train_pred = classifier.predict(train_X)
-print("Initial Accuracy of SVM", metrics.accuracy_score(train_y, train_pred))
+train_pred = classifier.predict(train_X) 
 
 #K-Fold Cross Validation
 k_folds = KFold(n_splits = 10)
 
 scores = cross_val_score(classifier, train_X, train_y, cv = k_folds)
 
-print("Average SVM CV Scores with Default Hyperparameters:", scores.mean())
+SVM_baseline = scores.mean()
+print("Average SVM CV Scores with Default Hyperparameters:", SVM_baseline)
 
 #Grid Search
 param_grid = {'kernel': ['linear','poly'],'C':[.001, 0.1, 1, 10], 'gamma': [0.001, 0.1, 1, 10]}
@@ -170,17 +170,19 @@ grid_search = GridSearchCV(classifier, param_grid, cv=10)
 
 grid_search.fit(train_X, train_y)
 
-print("SVM Optimal Hyperparameters:", grid_search.best_params_) 
-print("SVM Best cross-validation score with Optimal Hyperparameters:", grid_search.best_score_)
+SVM_hp = grid_search.best_params_
+print("SVM Optimal Hyperparameters:", SVM_hp)
 
 #Second Cross Validation with initial model and optimized hyperparameters
 k_folds = KFold(n_splits = 10)
 scores2= cross_val_score(grid_search,train_X, train_y, cv = k_folds)
-print("SVM Average CV Scores with Optimal Hyperparameters:", scores2.mean())
+SVM_tuned = scores2.mean()
+print("SVM Average CV Scores with Optimal Hyperparameters:", SVM_tuned)
 
 #Evaluating Model on the Test Set
 y_test_pred = grid_search.predict(test_X)
-print("Final SVM Accuracy on the Test Set:", metrics.accuracy_score(test_y, y_test_pred))
+SVM_test = metrics.accuracy_score(test_y, y_test_pred)
+print("Final SVM Accuracy on the Test Set:", SVM_test)
 
 #%% Neural Network
 

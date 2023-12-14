@@ -155,8 +155,6 @@ accuracy_score_test = gs.score(test_X, test_y)
 print(f'Logistic regression Accuracy score on the test set post grid search: {accuracy_score_test*100}%')
 
 
-
-
  #%% SVM
 #fit model for classification
 #Creating SVM classifier with linear kernel
@@ -211,6 +209,7 @@ mlp_baseline = cross_val_score(mlp_og, train_X, train_y, cv = kf)
 print(f"Accuracy Scores Default Hyperparams: {mlp_baseline}")
 print(f"Average CV Accuracy Scores on OG model: {mlp_baseline.mean()}")
 
+
 #setting a grid
 grid = {
     'hidden_layer_sizes': [(100,100), (100,100,50)],
@@ -221,14 +220,16 @@ grid = {
     'max_iter' : [10000]
 }
 
+
 #performing grid search cv
 mlp_gs_cv = GridSearchCV(estimator=mlp, param_grid=grid, cv= kf) #returns a model with the best hyperparameters
 
-#Find best parameters from the Grid search CV
-print(f"best_params: {mlp_gs_cv.best_params_}")
-
 #fitting the model with best hyper parameters on the training set
 mlp_gs_cv.fit(train_X, train_y)
+
+#Find best parameters from the Grid search CV
+print(f"best_params: {mlp_gs_cv.best_params_}")
+mlp_hp = mlp_gs_cv.best_params_
 
 #doing k cross validation with new tuned model on the training set to see how the accuracies change
 mlp_tuned = cross_val_score(mlp_gs_cv, train_X, train_y, cv = kf)
